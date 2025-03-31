@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBookingApp.Application", "src\MusicBookingApp.Application\MusicBookingApp.Application.csproj", "{8FD1628E-514B-4CB0-8E3D-FA26BCFCC940}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBookingApp.Domain", "src\MusicBookingApp.Domain\MusicBookingApp.Domain.csproj", "{7B15062B-AE39-47EE-8585-8EFAE23ECBB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBookingApp.Host", "src\MusicBookingApp.Host\MusicBookingApp.Host.csproj", "{E9BB820C-F5FE-45EE-9315-08DB11C20201}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBookingApp.Infrastructure", "src\MusicBookingApp.Infrastructure\MusicBookingApp.Infrastructure.csproj", "{2DCDBF7A-3BC0-4839-8715-B8421C05EC0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBookingApp.Tests", "tests\MusicBookingApp.Tests\MusicBookingApp.Tests.csproj", "{2883ADEF-0477-4D02-99BF-567ADD79ABA9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FD1628E-514B-4CB0-8E3D-FA26BCFCC940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FD1628E-514B-4CB0-8E3D-FA26BCFCC940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FD1628E-514B-4CB0-8E3D-FA26BCFCC940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FD1628E-514B-4CB0-8E3D-FA26BCFCC940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B15062B-AE39-47EE-8585-8EFAE23ECBB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B15062B-AE39-47EE-8585-8EFAE23ECBB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B15062B-AE39-47EE-8585-8EFAE23ECBB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B15062B-AE39-47EE-8585-8EFAE23ECBB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9BB820C-F5FE-45EE-9315-08DB11C20201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9BB820C-F5FE-45EE-9315-08DB11C20201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9BB820C-F5FE-45EE-9315-08DB11C20201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9BB820C-F5FE-45EE-9315-08DB11C20201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DCDBF7A-3BC0-4839-8715-B8421C05EC0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DCDBF7A-3BC0-4839-8715-B8421C05EC0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DCDBF7A-3BC0-4839-8715-B8421C05EC0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DCDBF7A-3BC0-4839-8715-B8421C05EC0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2883ADEF-0477-4D02-99BF-567ADD79ABA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2883ADEF-0477-4D02-99BF-567ADD79ABA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2883ADEF-0477-4D02-99BF-567ADD79ABA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2883ADEF-0477-4D02-99BF-567ADD79ABA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C913522-A75D-4E06-8E42-BB420F8B1E57}
+	EndGlobalSection
+EndGlobal
