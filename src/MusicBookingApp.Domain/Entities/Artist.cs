@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-
 using MusicBookingApp.Domain.Entities.Base;
-
 
 namespace MusicBookingApp.Domain.Entities
 {
@@ -15,5 +13,7 @@ namespace MusicBookingApp.Domain.Entities
         public required string Bio { get; set; }
         public bool IsAvailable { get; set; } = true;
 
+        // Navigation property for events the artist is performing at
+        public List<Event> Events { get; set; } = new();
     }
 }

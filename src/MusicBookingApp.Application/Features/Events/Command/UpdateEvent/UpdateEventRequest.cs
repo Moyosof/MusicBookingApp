@@ -16,6 +16,7 @@ namespace MusicBookingApp.Application.Features.Events.Command.UpdateEvent
         public int? MaxAttendees { get; set; }
         public decimal? TicketPrice { get; set; }
     }
+
     public class UpdateEventRequest : IRequest<Result<MyUnit>>
     {
         public required string UserId { get; set; }
@@ -27,22 +28,30 @@ namespace MusicBookingApp.Application.Features.Events.Command.UpdateEvent
         public required decimal? TicketPrice { get; set; }
     }
 
-
     public class UpdateEventRequestHandler(
         ILogger<UpdateEventRequestHandler> logger,
-        IUnitOfWork unitOfWork, IValidator<UpdateEventRequest> validator
-     ) : IRequestHandler<UpdateEventRequest, Result<MyUnit>>
+        IUnitOfWork unitOfWork,
+        IValidator<UpdateEventRequest> validator
+    ) : IRequestHandler<UpdateEventRequest, Result<MyUnit>>
     {
-        public async Task<Result<MyUnit>> Handle(UpdateEventRequest request, CancellationToken cancellationToken)
+        public async Task<Result<MyUnit>> Handle(
+            UpdateEventRequest request,
+            CancellationToken cancellationToken
+        )
         {
-            logger.LogInformation("Attempting to updating artist event for user Id {userId}", request.UserId);
+            logger.LogInformation(
+                "Attempting to updating artist event for user Id {userId}",
+                request.UserId
+            );
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.ToErrorList();
-                logger.LogError("Validation errors occurred while updating00 artist event with request: {request}. Errors: {errors}.",
-                                request,
-                                errors);
+                logger.LogError(
+                    "Validation errors occurred while updating00 artist event with request: {request}. Errors: {errors}.",
+                    request,
+                    errors
+                );
                 return Result<MyUnit>.Failure(errors);
             }
 
@@ -62,28 +71,54 @@ namespace MusicBookingApp.Application.Features.Events.Command.UpdateEvent
             unitOfWork.Events.Update(@event);
             await unitOfWork.CompleteAsync();
 
-            logger.LogInformation("Successfully update artist event for user: {userId}.", request.UserId);
+            logger.LogInformation(
+                "Successfully update artist event for user: {userId}.",
+                request.UserId
+            );
             return Result<MyUnit>.Success(MyUnit.Value);
         }
 
-        public class CreateEventRequestValidation : AbstractValidator<UpdateEventRequest>
+        public class UpdateEventRequestValidation : AbstractValidator<UpdateEventRequest>
         {
-            public CreateEventRequestValidation()
+            public UpdateEventRequestValidation()
             {
-                RuleFor(x => x.UserId)
-                    .NotEmpty().WithMessage("UserId is required.");
+                RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
 
-                RuleFor(x => x.EventName)
-                    .NotEmpty();
+                RuleFor(x => x.EventName).NotEmpty();
 
-                RuleFor(x => x.MaxAttendees).NotEmpty()
-                    .GreaterThan(0).WithMessage("WeeklyAmount must be greater than 0.");
+                When(
+                    x => x.TicketPrice.HasValue,
+                    () =>
+                    {
+                        RuleFor(x => x.MaxAttendees)
+                            .NotEmpty()
+                            .GreaterThan(0)
+                            .WithMessage("WeeklyAmount must be greater than 0.");
+                    }
+                );
 
-                RuleFor(x => x.EventDate).NotEmpty()
-                    .GreaterThanOrEqualTo(DateTime.UtcNow).WithMessage("Start date can not be in the past, It can be now or future.");
+                When(
+                    x => x.EventDate.HasValue,
+                    () =>
+                    {
+                        RuleFor(x => x.EventDate)
+                            .NotEmpty()
+                            .GreaterThanOrEqualTo(DateTime.UtcNow)
+                            .WithMessage(
+                                "Start date can not be in the past, It can be now or future."
+                            );
+                    }
+                );
 
-                RuleFor(x => x.TicketPrice).NotEmpty()
-                    .GreaterThan(0).WithMessage("TargetAmount must be greater than 0.");
+                When(
+                    x => x.TicketPrice.HasValue,
+                    () =>
+                    {
+                        RuleFor(x => x.TicketPrice)
+                            .GreaterThan(0)
+                            .WithMessage("Ticket price must be greater than 0.");
+                    }
+                );
             }
         }
     }
