@@ -1,3 +1,5 @@
+using System.Security.Claims;
+
 namespace MusicBookingApp.Application.Contracts
 {
     public interface ICurrentUser
@@ -5,6 +7,6 @@ namespace MusicBookingApp.Application.Contracts
         string UserId { get; }
         string Email { get; }
         string Role { get; }
-        string FirstName { get; }
+        ClaimsPrincipal User { get; }
     }
 }
