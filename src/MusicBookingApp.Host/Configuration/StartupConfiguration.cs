@@ -1,8 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
 
+using MusicBookingApp.Application.Features.Auth.Command.Login;
 using MusicBookingApp.Infrastructure.Filters;
 using MusicBookingApp.Infrastructure.Middleware;
 
@@ -41,7 +44,16 @@ namespace MusicBookingApp.Host.Configuration
                 jsonOptions.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             });
         }
-
+        /// <summary>
+        /// Add MediatR handlers and FluentValidation validators to the DI container.
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddFeatures(this IServiceCollection services)
+        {
+            var assemblyToScan = typeof(LoginRequest).Assembly;
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assemblyToScan));
+            services.AddValidatorsFromAssembly(assemblyToScan);
+        }
         public static void RegisterMiddleware(this WebApplication app)
         {
             app.UseHttpsRedirection();

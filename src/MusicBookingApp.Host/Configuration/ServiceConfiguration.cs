@@ -1,7 +1,13 @@
+using System.Reflection;
+
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using MusicBookingApp.Application.Contracts;
+using MusicBookingApp.Application.Repositories.Base;
+using MusicBookingApp.Infrastructure.Repositories.Base;
 using MusicBookingApp.Infrastructure.Services;
+
+using NetCore.AutoRegisterDi;
 
 namespace MusicBookingApp.Host.Configuration
 {
@@ -11,13 +17,38 @@ namespace MusicBookingApp.Host.Configuration
         /// Register services in the DI container.
         /// </summary>
         /// <param name="services"></param>
-        public static void RegisterServices(this IServiceCollection services)
+        /// 
+
+        public static IServiceCollection RegisterApplicationServices<T>(
+               this IServiceCollection services
+           )
         {
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICurrentUser, CurrentUser>();
-            // used for time manipulation and testing
-            // we should use this instead of DateTime.Now
-            services.AddSingleton(TimeProvider.System);
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
+
+            var assemblyserviseToScan = Assembly.GetAssembly(typeof(T));
+            services
+                .RegisterAssemblyPublicNonGenericClasses(assemblyserviseToScan)
+                .Where(x => x.Name.EndsWith("Service"))
+                .AsPublicImplementedInterfaces();
+
+            return services;
+        }
+
+        public static IServiceCollection RegisterApplicationRepository<T>(
+               this IServiceCollection services
+           )
+        {
+            var assemblyserviseToScan = Assembly.GetAssembly(typeof(T));
+            services
+                .RegisterAssemblyPublicNonGenericClasses(assemblyserviseToScan)
+                .Where(x => x.Name.EndsWith("Repository"))
+                .AsPublicImplementedInterfaces();
+
+            return services;
         }
     }
 }

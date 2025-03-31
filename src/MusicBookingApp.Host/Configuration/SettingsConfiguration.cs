@@ -13,10 +13,10 @@ namespace MusicBookingApp.Host.Configuration
         /// <typeparam name="T">The type of the settings class.</typeparam>
         /// <param name="services">The IServiceCollection to add the settings to.</param>
         /// <param name="configuration">The application's configuration.</param>
-        private static void ConfigureSettings<T>(IServiceCollection services, IConfiguration? configuration)
+        private static void ConfigureSettings<T>(IServiceCollection services)
             where T : class, new()
         {
-            services.Configure<T>(options => configuration?.GetSection(typeof(T).Name).Bind(options));
+            services.AddOptions<T>().BindConfiguration(typeof(T).Name).ValidateDataAnnotations().ValidateOnStart();
         }
 
         /// <summary>
@@ -25,15 +25,8 @@ namespace MusicBookingApp.Host.Configuration
         /// <param name="services">The IServiceCollection to add the settings to.</param>
         public static void SetupConfigFiles(this IServiceCollection services)
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                                           // .AddUserSecrets<Program>() // used to manage secrets during development
-                                           .AddEnvironmentVariables()
-                                           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                                           .Build();
-
-            Console.WriteLine($"{configuration.AsEnumerable().Count()} secrets retrieved.");
-
-            ConfigureSettings<DatabaseSettings>(services, configuration);
+            ConfigureSettings<DatabaseSettings>(services);
+            ConfigureSettings<JwtSettings>(services);
             Console.WriteLine("Secrets have been bound to classes.");
         }
     }

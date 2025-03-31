@@ -1,22 +1,51 @@
 using MusicBookingApp.Host.Configuration;
+using MusicBookingApp.Infrastructure.Data;
+using MusicBookingApp.Infrastructure.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+internal class Program
+{
+    private static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var environment = builder.Environment.EnvironmentName;
+        builder.Configuration.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+            .AddUserSecrets<Program>()
+            .AddEnvironmentVariables()
+            .Build();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowMyOrigin", x =>
+            {
+                x.WithOrigins("http://127.0.0.1:5500", "null", "http://localhost:3000")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
+            });
+        });
+        builder.Services.AddSignalR();
 
-builder.Services.SetupConfigFiles();
-// setup database
-builder.Services.SetupControllers();
-builder.Services.AddSwagger();
-builder.Services.SetupFilters();
-// setup identity
-// setup authentication
-builder.Services.RegisterServices();
-builder.Services.SetupJsonOptions();
+        builder.Services.SetupConfigFiles();
+        builder.Services.SetupDatabase<DataContext>();
+        builder.Services.SetupControllers();
+        builder.Services.SetupSwagger();
+        builder.Services.SetupFilters();
+        builder.Services.SetupMsIdentity();
+        builder.Services.SetupAuthentication();
+        builder.Services.RegisterApplicationServices<AuthService>();
+        builder.Services.SetupJsonOptions();
+        builder.Services.AddFeatures();
 
-var app = builder.Build();
-app.RegisterSwagger();
-app.RegisterMiddleware();
-// seed db here if needed
-app.Run();
+        var app = builder.Build();
+        await app.ApplyMigrations<DataContext>();
+        app.UseCors("AllowMyOrigin");
+        app.RegisterSwagger();
+        app.RegisterMiddleware();
+        app.Run();
+    }
+}
 
-// this is here for integration tests
-public partial class Program;
+// for integration tests
+namespace MusicBookingApp.Host
+{
+    public partial class Program;
+}
