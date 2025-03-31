@@ -23,9 +23,9 @@ namespace MusicBookingApp.Application.Features.Auth.Command.Login
     }
 
     public class LoginRequestHandler(
-        UserManager<User> userManager,
+        UserManager<Domain.Entities.User> userManager,
         IOptionsSnapshot<JwtSettings> options,
-        SignInManager<User> signInManager,
+        SignInManager<Domain.Entities.User> signInManager,
         ILogger<LoginRequestHandler> logger
     ) : IRequestHandler<LoginRequest, Result<UserAuthResponse>>
     {

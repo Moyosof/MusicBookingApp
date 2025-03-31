@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
+using MusicBookingApp.Domain.Entities.Base;
+
 
 namespace MusicBookingApp.Domain.Entities
 {
-    public class Artist : IdentityUser
+    public class Artist : BaseEntity
     {
         public required string UserId { get; set; }
         public User User { get; set; } = null!;

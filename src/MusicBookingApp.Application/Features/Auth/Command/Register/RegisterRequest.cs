@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 using MusicBookingApp.Application.ApiResponses;
 using MusicBookingApp.Application.Extensions;
+using MusicBookingApp.Application.Repositories.Base;
 using MusicBookingApp.Domain.Constants;
 using MusicBookingApp.Domain.Entities;
 using MusicBookingApp.Domain.ServiceErrors;
@@ -23,8 +24,9 @@ namespace MusicBookingApp.Application.Features.Auth.Command.Register
     }
 
     public class RegisterRequestHandler(
-        UserManager<User> userManager,
+        UserManager<Domain.Entities.User> userManager,
         RoleManager<IdentityRole> roleManager,
+    IUnitOfWork unitOfWork,
         ILogger<RegisterRequestHandler> logger,
         IValidator<RegisterRequest> validator)
         : IRequestHandler<RegisterRequest, Result<UserAuthResponse>>
@@ -87,6 +89,20 @@ namespace MusicBookingApp.Application.Features.Auth.Command.Register
                     return Result<UserAuthResponse>.Failure(Errors.Auth.EmailVerificationFailed);
                 }
 
+                if (request.Role == Roles.ARTIST)
+                {
+                    var artist = new Artist
+                    {
+                        UserId = newUser.Id,
+                        StageName = $"{request.FirstName} {request.LastName}",
+                        Genre = "Pop",
+                        Bio = "Stream my music",
+                        IsAvailable = true
+                    };
+
+                    await unitOfWork.Artists.Add(artist);
+                    await unitOfWork.CompleteAsync();
+                }
                 return Result<UserAuthResponse>.Success(new UserAuthResponse
                 {
                     Id = newUser.Id,
