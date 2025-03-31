@@ -1,32 +1,27 @@
-# MusicBookingApp
+# Music Booking API
 
-## Description
+## Overview
+The Music Booking API is a RESTful service designed for managing music event bookings, including artists, venues, schedules, and user reservations. This API facilitates seamless interaction between event organizers, artists, and fans.  
 
-This is my template for projects in C#. It has a consistent folder structure and responses for the API. An editorconfig file is also included. The template mixes Clean  Architecture with Vertical Slice Architecture.  
+Features
 
-## Installation
-Clone the repository  
+Artist and Venue Management
 
-```bash
-git clone https://github.com/henrychris/musicbookingapp.git
-```
+Event Scheduling
 
-cd to the root directory  
+User Bookings and Reservations
 
-```bash
-cd musicbookingapp
-```
+Payment Integration
 
-Install the template
-```bash
-dotnet new install .
-```
+Authentication and Authorization
 
-## Usage
+Tech Stack
 
-Create a new project
-```bash
-dotnet new musicbookingapp -n YourProjectName
-```
-You can run the project using the `dotnet run` command in the ProjectName.Host folder. The project will be available at `http://localhost:5051`.
-Access `http://localhost:5051/swagger` to see the available endpoints.
+Backend: .NET (C#)
+
+Database: PostgreSQL
+
+Authentication: OAuth2
+
+Containerization: Docker
+
