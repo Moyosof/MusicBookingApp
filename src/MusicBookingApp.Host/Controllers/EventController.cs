@@ -1,22 +1,29 @@
 ﻿using MediatR;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicBookingApp.Application.ApiResponses;
 using MusicBookingApp.Application.Contracts;
 using MusicBookingApp.Application.Extensions;
+using MusicBookingApp.Application.Features.Bookings.Command.BookAnEvent;
 using MusicBookingApp.Application.Features.Events.Command.CreateEvent;
 using MusicBookingApp.Application.Features.Events.Command.UpdateEvent;
 using MusicBookingApp.Application.Features.Events.Queries;
 using MusicBookingApp.Application.Features.Events.Queries.GetEventById;
 using MusicBookingApp.Application.Features.Events.Queries.GetEvents;
 using MusicBookingApp.Application.Utility;
+using MusicBookingApp.Domain.Constants;
 using MusicBookingApp.Host.Controllers.Base;
+using MusicBookingApp.Infrastructure.Web.Attributes;
 
 namespace MusicBookingApp.Host.Controllers
 {
+    [Authorize]
     public class EventController(IMediator mediator, ICurrentUser currentUser) : BaseController
     {
         #region EVENT
 
+        [AuthorizeRole(Roles.ARTIST)]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<CreateEventResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateEventAsync(
@@ -37,6 +44,7 @@ namespace MusicBookingApp.Host.Controllers
             return result.Match(_ => Ok(result.ToSuccessfulApiResponse()), ReturnErrorResponse);
         }
 
+        [AuthorizeRole(Roles.ARTIST)]
         [HttpPatch("{eventId:guid}")]
         [ProducesResponseType(typeof(ApiResponse<MyUnit>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateEventAsync(
@@ -84,6 +92,27 @@ namespace MusicBookingApp.Host.Controllers
             var result = await mediator.Send(new GetEventsRequest { UserId = currentUser.UserId });
             return result.Match(_ => Ok(result.ToSuccessfulApiResponse()), ReturnErrorResponse);
         }
+        #endregion
+
+        #region EVENT BOOKING
+
+        [HttpPost("{eventId:guid}/book-an-event")]
+        [ProducesResponseType(typeof(ApiResponse<CreateEventResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> BookAnEventAsync(string eventId,
+            [FromBody] BookAnEventRequestDto requestDto
+        )
+        {
+            var result = await mediator.Send(
+                new BookAnEventRequest
+                {
+                    EventId = eventId,
+                    BookieEmail = requestDto.BookieEmail,
+                    BookieName = requestDto.BookieName
+                }
+            );
+            return result.Match(_ => Ok(result.ToSuccessfulApiResponse()), ReturnErrorResponse);
+        }
+
         #endregion
     }
 }

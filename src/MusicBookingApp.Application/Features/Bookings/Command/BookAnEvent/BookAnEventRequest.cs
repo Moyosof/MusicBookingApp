@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MusicBookingApp.Application.ApiResponses;
 using MusicBookingApp.Application.Extensions;
+using MusicBookingApp.Application.Repositories;
 using MusicBookingApp.Application.Repositories.Base;
 using MusicBookingApp.Domain.Entities;
 using MusicBookingApp.Domain.Enums;
@@ -10,6 +11,11 @@ using MusicBookingApp.Domain.ServiceErrors;
 
 namespace MusicBookingApp.Application.Features.Bookings.Command.BookAnEvent
 {
+    public class BookAnEventRequestDto
+    {
+        public required string BookieName { get; set; }
+        public required string BookieEmail { get; set; }
+    }
     public class BookAnEventRequest : IRequest<Result<BookAnEventResponse>>
     {
         public required string EventId { get; set; }
@@ -43,11 +49,25 @@ namespace MusicBookingApp.Application.Features.Bookings.Command.BookAnEvent
                 return Result<BookAnEventResponse>.Failure(Errors.General.EventNotFound);
             }
 
+            var existingBooking = await unitOfWork.Bookings.GetExistingBookingByEmailAsync(
+            request.EventId,
+            request.BookieEmail,
+            cancellationToken
+        );
+
+            if (existingBooking is not null)
+            {
+                logger.LogWarning(
+                    "User {BookieEmail} has already booked this event {EventId}.",
+                    request.BookieEmail,
+                    request.EventId
+                );
+                return Result<BookAnEventResponse>.Failure(Errors.General.AlreadyBooked);
+            }
+
             // Get current booking count
-            var currentAttendeesCount = await unitOfWork
-                .Bookings.GetQueryable()
-                .Where(b => b.EventId == request.EventId)
-                .CountAsync(cancellationToken);
+            var currentAttendeesCount = await unitOfWork.Bookings.GetCurrentAttendeesCountAsync(request.EventId, cancellationToken);
+
 
             if (currentAttendeesCount >= eventEntity.MaxAttendees)
             {

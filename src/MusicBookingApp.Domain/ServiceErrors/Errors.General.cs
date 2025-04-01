@@ -18,6 +18,12 @@
                     code: "General.EventFullyBooked",
                     description: "Oops 🤦‍♂️ This event is fully booked"
                 );
+
+            public static Error AlreadyBooked =>
+               Error.Failure(
+                   code: "General.AlreadyBooked",
+                   description: "You have already booked this event.👌"
+               );
         }
     }
 }
