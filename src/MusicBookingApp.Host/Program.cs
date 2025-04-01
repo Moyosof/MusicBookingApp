@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.RateLimiting;
+
 using MusicBookingApp.Host.Configuration;
 using MusicBookingApp.Infrastructure.Data;
 using MusicBookingApp.Infrastructure.Services;
@@ -34,12 +36,14 @@ internal class Program
         builder.Services.RegisterApplicationServices<AuthService>();
         builder.Services.SetupJsonOptions();
         builder.Services.AddFeatures();
+        builder.Services.ConfigureRateLimiter();
 
         var app = builder.Build();
         await app.ApplyMigrations<DataContext>();
         app.UseCors("AllowMyOrigin");
         app.RegisterSwagger();
         app.RegisterMiddleware();
+        app.UseRateLimiter();
         app.Run();
     }
 }

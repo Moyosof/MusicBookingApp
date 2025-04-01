@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+
 using MusicBookingApp.Application.ApiResponses;
 using MusicBookingApp.Application.Contracts;
 using MusicBookingApp.Application.Extensions;
@@ -24,6 +26,7 @@ namespace MusicBookingApp.Host.Controllers
         #region EVENT
 
         [AuthorizeRole(Roles.ARTIST)]
+        [EnableRateLimiting("Fixed")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<CreateEventResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateEventAsync(
