@@ -8,6 +8,8 @@ using MusicBookingApp.Application.Features.User.Queries.GetArtistById;
 using MusicBookingApp.Host.Controllers.Base;
 using MusicBookingApp.Application.Utility;
 using MusicBookingApp.Application.Features.User.Command.UpdateArtistProfile;
+using MusicBookingApp.Domain.Constants;
+using MusicBookingApp.Infrastructure.Web.Attributes;
 
 namespace MusicBookingApp.Host.Controllers
 {
@@ -16,6 +18,7 @@ namespace MusicBookingApp.Host.Controllers
     {
         #region ARTIST
 
+        [AuthorizeRole(Roles.ARTIST)]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<GetArtistByUserIdResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserById()
@@ -24,6 +27,7 @@ namespace MusicBookingApp.Host.Controllers
             return result.Match(_ => Ok(result.ToSuccessfulApiResponse()), ReturnErrorResponse);
         }
 
+        [AuthorizeRole(Roles.ARTIST)]
         [HttpPost("update-artist-profile")]
         [ProducesResponseType(typeof(ApiResponse<MyUnit>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CompleteUserProfile(string userId, UpdateArtistProfileRequestDto requestDto)
