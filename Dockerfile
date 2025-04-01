@@ -3,6 +3,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
+# Set environment to Development
+ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 8080
 #EXPOSE 8081
 
@@ -25,4 +27,6 @@ RUN dotnet publish "./MusicBookingApp.Host.csproj" -c $BUILD_CONFIGURATION -o /a
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# Log the environment (debugging purposes)
+RUN echo "Running in ASP.NET Core Environment: $ASPNETCORE_ENVIRONMENT"
 ENTRYPOINT ["dotnet", "MusicBookingApp.Host.dll"]
